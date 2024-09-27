@@ -1,17 +1,15 @@
-import express from 'express';
-import sequelize from './database';
-import userRoutes from './routes/user';
+import express from "express";
+import authRoutes from "./routes/auth";
+import notesRoutes from "./routes/notes";
+import { authenticateJWT } from "./middlewares/authenticate";
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use('/users', userRoutes);
+app.use("/auth", authRoutes);
+app.use("/notes", authenticateJWT, notesRoutes);
 
-sequelize.sync().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-  });
-}).catch(err => {
-  console.error('Unable to connect to the database:', err);
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
